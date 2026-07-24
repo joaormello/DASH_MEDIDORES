@@ -1,0 +1,16 @@
+openpyxl
+xlsxwriter
+
+matplotlib
+seaborn
+plotly
+
+python-dotenv
+
+black
+flake8
+
+pytest
+pandas
+numpy
+streamlit
