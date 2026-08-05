@@ -1,0 +1,20 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<as:Job xmlns:as="urn:tibco:spotfire.dxp.automation">
+  <as:Tasks>
+    <OpenAnalysisFromLibrary xmlns="urn:tibco:spotfire.dxp.automation.tasks">
+      <as:Title>Open Analysis from Library</as:Title>
+      <AnalysisPath>/SP/Dash Medidores/Ciclo Comercial - Monitoramento Notas de Leitura_vs3</AnalysisPath>
+    </OpenAnalysisFromLibrary>
+    <ExportDataToFile xmlns="urn:tibco:spotfire.dxp.automation.tasks">
+      <as:Title>Export Data to File</as:Title>
+      <ExportTableVisualization>false</ExportTableVisualization>
+      <DataTableId>0ddc9649-4ff2-40ed-b3cc-52e97d9e13db</DataTableId>
+      <DataTableName>NOTAS</DataTableName>
+      <VisualizationId>2e633ebf-2ab5-4b52-a41f-84800c12e2fd</VisualizationId>
+      <VisualizationName>Lista operacional - Listagem operacional</VisualizationName>
+      <ExportFormatName>Spotfire.SpreadsheetDataCsvWriter</ExportFormatName>
+      <ExportFormatDisplayName>CSV File (Comma-separated): *.csv</ExportFormatDisplayName>
+      <FilePath>C:\Users\BR0450988468\Documents\GitHub\DASH_MEDIDORES\base\base.csv</FilePath>
+    </ExportDataToFile>
+  </as:Tasks>
+</as:Job>

@@ -1,5 +1,0 @@
-from services.excel_service import obter_instalacoes_gera_nota_modifica
-
-lista_instalacoes = obter_instalacoes_gera_nota_modifica()
-
-print(lista_instalacoes)
