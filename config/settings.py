@@ -1,14 +1,28 @@
 from pathlib import Path
 
 
+# ============================================================
+# CAMINHOS DO PROJETO
+# ============================================================
+
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 PASTA_BASE = BASE_DIR / "base"
 PASTA_RAW = BASE_DIR / "data" / "raw"
+PASTA_CONTROLE = BASE_DIR / "data" / "controle"
 
 ARQUIVO_CSV = PASTA_BASE / "base.csv"
 ARQUIVO_SAIDA = PASTA_BASE / "consulta_instalacoes.xlsx"
 
+ARQUIVO_CONTROLE = (
+    PASTA_CONTROLE
+    / "ultima_base_processada.txt"
+)
+
+
+# ============================================================
+# MAPEAMENTO DE COLUNAS
+# ============================================================
 
 MAPEAMENTO_COLUNAS = {
     "PROCESSO": "PROCESSO",
@@ -32,6 +46,10 @@ MAPEAMENTO_COLUNAS = {
 }
 
 
+# ============================================================
+# COLUNAS QUE AINDA SERÃO PREENCHIDAS
+# ============================================================
+
 COLUNAS_PENDENTES = [
     "AREA",
     "DATA_LIGACAO",
@@ -54,6 +72,10 @@ COLUNAS_PENDENTES = [
     "CONTRATO",
 ]
 
+
+# ============================================================
+# ORDEM FINAL DAS COLUNAS
+# ============================================================
 
 ORDEM_COLUNAS = [
     # A
