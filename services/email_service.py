@@ -13,3 +13,4 @@ def enviar_email(destinatario:str, assunto:str, corpo:str, anexo=None):
 
     email.Display()
 
+enviar_email("fernando.alves@enel.com", "TESTE DE ENVIO", "relatorio enviado com sucesso!", anexo=r"C:\Users\BR0459067248\Documents\GitHub\DASH_MEDIDORES\base\consulta_instalacoes.xlsx")
