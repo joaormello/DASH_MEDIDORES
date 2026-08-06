@@ -29,7 +29,7 @@ def exportar_resultado_excel(
     resultado: pd.DataFrame,
     nao_encontradas: pd.DataFrame,
     caminho_saida: Path,
-) -> None:
+) -> Path:
     caminho_saida.parent.mkdir(
         parents=True,
         exist_ok=True,
@@ -65,3 +65,5 @@ def exportar_resultado_excel(
             "Verifique se ele está aberto:\n"
             f"{caminho_saida}"
         ) from erro
+
+    return caminho_saida

@@ -1,6 +1,15 @@
-import win32com.client as win32 
+from pathlib import Path
 
-def enviar_email(destinatario:str, assunto:str, corpo:str, anexo=None):
+import win32com.client as win32
+
+
+def enviar_email(
+    destinatario: str,
+    assunto: str,
+    corpo: str,
+    anexo: Path | str | None = None,
+) -> None:
+
     outlook = win32.Dispatch("Outlook.Application")
     email = outlook.CreateItem(0)
 
@@ -8,9 +17,8 @@ def enviar_email(destinatario:str, assunto:str, corpo:str, anexo=None):
     email.Subject = assunto
     email.Body = corpo
 
-    if anexo:
-        email.Attachments.Add(anexo)
+    if anexo is not None:
+        email.Attachments.Add(str(anexo))
 
-    email.Display()
-
-enviar_email("fernando.alves@enel.com", "TESTE DE ENVIO", "relatorio enviado com sucesso!", anexo=r"C:\Users\BR0459067248\Documents\GitHub\DASH_MEDIDORES\base\consulta_instalacoes.xlsx")
+    email.Display()      # Para revisar antes de enviar
+    email.Send()       # Descomente para enviar automaticamente

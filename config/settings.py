@@ -1,12 +1,11 @@
 from pathlib import Path
 from datetime import datetime
 
-
-#=============================================================
+# ============================================================
 # CONFIGURAÇÕES
-#=============================================================
-AGUARDAR_NOVA_EXPORTACAO = False
+# ============================================================
 
+AGUARDAR_NOVA_EXPORTACAO = False
 
 # ============================================================
 # CAMINHOS DO PROJETO
@@ -21,18 +20,18 @@ PASTA_CONTROLE = BASE_DIR / "data" / "controle"
 
 ARQUIVO_CSV = PASTA_BASE / "base.csv"
 
-ARQUIVO_CONTROLE = (
-    PASTA_CONTROLE
-    / "ultima_base_processada.txt"
-)
+ARQUIVO_CONTROLE = PASTA_CONTROLE / "ultima_base_processada.txt"
 
+# ============================================================
+# ARQUIVO DE SAÍDA
+# ============================================================
 
 def obter_arquivo_saida() -> Path:
     """
-    Gera um arquivo de saída contendo a data e hora da execução.
+    Retorna o caminho completo do relatório da execução atual.
+    O arquivo terá data e hora no nome.
     """
 
-    # Garante que a pasta exista
     PASTA_RESULTADOS.mkdir(
         parents=True,
         exist_ok=True,
@@ -40,10 +39,7 @@ def obter_arquivo_saida() -> Path:
 
     data_hora = datetime.now().strftime("%Y%m%d_%H%M%S")
 
-    return (
-        PASTA_RESULTADOS
-        / f"consulta_instalacoes_{data_hora}.xlsx"
-    )
+    return PASTA_RESULTADOS / f"consulta_instalacoes_{data_hora}.xlsx"
 
 
 # ============================================================

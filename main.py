@@ -2,7 +2,7 @@ from config.settings import (
     ARQUIVO_CSV,
     ARQUIVO_CONTROLE,
     obter_arquivo_saida,
-    AGUARDAR_NOVA_EXPORTACAO
+    AGUARDAR_NOVA_EXPORTACAO,
 )
 
 from services.excel_service import (
@@ -30,6 +30,10 @@ from services.exportacao_service import (
     exportar_resultado_excel,
 )
 
+from services.email_service import (
+    enviar_email,
+)
+
 
 def main() -> None:
 
@@ -54,13 +58,14 @@ def main() -> None:
         "encontradas na planilha."
     )
 
-
     # =====================================================
     # ETAPA 2 - NORMALIZAR AS INSTALAÇÕES
     # =====================================================
 
-    instalacoes_normalizadas = normalizar_lista_instalacoes(
-        lista_instalacoes
+    instalacoes_normalizadas = (
+        normalizar_lista_instalacoes(
+            lista_instalacoes
+        )
     )
 
     if not instalacoes_normalizadas:
@@ -74,19 +79,13 @@ def main() -> None:
         "válidas após a normalização."
     )
 
-
     # =====================================================
-    # ETAPA 3 - AGUARDAR NOVA EXPORTAÇÃO (PRODUÇÃO)
+    # ETAPA 3 - AGUARDAR NOVA EXPORTAÇÃO
     # =====================================================
 
     if AGUARDAR_NOVA_EXPORTACAO:
 
-        print("\n[MODO DESENVOLVIMENTO]")
-        print("Utilizando o base.csv existente.\n")
-
-        data_modificacao_csv = None
-
-    else:
+        print("\nAguardando uma nova exportação do Spotfire...\n")
 
         data_modificacao_csv = esperar_nova_exportacao(
             caminho_arquivo=ARQUIVO_CSV,
@@ -96,17 +95,24 @@ def main() -> None:
             tempo_estabilidade=5,
         )
 
+    else:
+
+        print("\n[MODO DESENVOLVIMENTO]")
+        print("Utilizando o base.csv existente.\n")
+
+        data_modificacao_csv = None
 
     # =====================================================
     # ETAPA 4 - LER O CSV
     # =====================================================
 
-    print(f"\nLendo o arquivo CSV:\n{ARQUIVO_CSV}")
+    print(
+        f"\nLendo o arquivo CSV:\n{ARQUIVO_CSV}"
+    )
 
     df_csv = ler_arquivo_csv(
         ARQUIVO_CSV
     )
-
 
     # =====================================================
     # ETAPA 5 - FILTRAR AS INSTALAÇÕES NO CSV
@@ -122,7 +128,6 @@ def main() -> None:
         "antes da remoção de duplicidades."
     )
 
-
     # =====================================================
     # ETAPA 6 - MANTER UMA LINHA POR INSTALAÇÃO
     # =====================================================
@@ -131,7 +136,6 @@ def main() -> None:
         resultado
     )
 
-
     # =====================================================
     # ETAPA 7 - MONTAR O RESULTADO FINAL
     # =====================================================
@@ -139,7 +143,6 @@ def main() -> None:
     resultado_final = montar_resultado_final(
         resultado
     )
-
 
     # =====================================================
     # ETAPA 8 - IDENTIFICAR AS NÃO ENCONTRADAS
@@ -152,36 +155,69 @@ def main() -> None:
         )
     )
 
-
     # =====================================================
-    # ETAPA 9 - DEFINIR O NOVO ARQUIVO DE SAÍDA
+    # ETAPA 9 - DEFINIR O ARQUIVO DE SAÍDA
     # =====================================================
 
     arquivo_saida = obter_arquivo_saida()
-
 
     # =====================================================
     # ETAPA 10 - EXPORTAR PARA EXCEL
     # =====================================================
 
-    exportar_resultado_excel(
+    print("\nGerando o relatório Excel...")
+
+    arquivo_gerado = exportar_resultado_excel(
         resultado=resultado_final,
         nao_encontradas=df_nao_encontradas,
         caminho_saida=arquivo_saida,
     )
 
+    # Confirma que o relatório foi realmente criado
+    if not arquivo_gerado.exists():
+        raise FileNotFoundError(
+            "O processamento terminou, mas o relatório "
+            "não foi encontrado:\n"
+            f"{arquivo_gerado}"
+        )
+
+    print(
+        f"Relatório gerado com sucesso:\n"
+        f"{arquivo_gerado}"
+    )
 
     # =====================================================
     # ETAPA 11 - REGISTRAR A BASE COMO PROCESSADA
     # =====================================================
 
-    if not AGUARDAR_NOVA_EXPORTACAO:
-
+    if (
+        AGUARDAR_NOVA_EXPORTACAO
+        and data_modificacao_csv is not None
+    ):
         salvar_ultima_execucao(
             caminho_controle=ARQUIVO_CONTROLE,
             data_modificacao=data_modificacao_csv,
         )
 
+    # =====================================================
+    # ETAPA 12 - ENVIAR O E-MAIL
+    # =====================================================
+
+    print("\nPreparando o e-mail...")
+
+    enviar_email(
+        destinatario="joao.melo@enel.com",
+        assunto="Relatório Diário",
+        corpo=(
+            "Olá,\n\n"
+            "Segue em anexo o relatório gerado "
+            "automaticamente.\n\n"
+            "Atenciosamente."
+        ),
+        anexo=arquivo_gerado,
+    )
+
+    print("E-mail preparado com sucesso.")
 
     # =====================================================
     # RESUMO
@@ -205,7 +241,8 @@ def main() -> None:
     )
 
     print(
-        f"Arquivo salvo em:\n{arquivo_saida}"
+        f"Arquivo salvo em:\n"
+        f"{arquivo_gerado}"
     )
 
 
