@@ -61,4 +61,6 @@ data/raw/
 ~$*.xlsx
 
 
-/base/*.csv
+/base/
+
+/resultados/

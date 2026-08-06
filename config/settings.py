@@ -1,4 +1,11 @@
 from pathlib import Path
+from datetime import datetime
+
+
+#=============================================================
+# CONFIGURAÇÕES
+#=============================================================
+AGUARDAR_NOVA_EXPORTACAO = False
 
 
 # ============================================================
@@ -8,16 +15,35 @@ from pathlib import Path
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 PASTA_BASE = BASE_DIR / "base"
+PASTA_RESULTADOS = BASE_DIR / "resultados"
 PASTA_RAW = BASE_DIR / "data" / "raw"
 PASTA_CONTROLE = BASE_DIR / "data" / "controle"
 
 ARQUIVO_CSV = PASTA_BASE / "base.csv"
-ARQUIVO_SAIDA = PASTA_BASE / "consulta_instalacoes.xlsx"
 
 ARQUIVO_CONTROLE = (
     PASTA_CONTROLE
     / "ultima_base_processada.txt"
 )
+
+
+def obter_arquivo_saida() -> Path:
+    """
+    Gera um arquivo de saída contendo a data e hora da execução.
+    """
+
+    # Garante que a pasta exista
+    PASTA_RESULTADOS.mkdir(
+        parents=True,
+        exist_ok=True,
+    )
+
+    data_hora = datetime.now().strftime("%Y%m%d_%H%M%S")
+
+    return (
+        PASTA_RESULTADOS
+        / f"consulta_instalacoes_{data_hora}.xlsx"
+    )
 
 
 # ============================================================
@@ -78,114 +104,41 @@ COLUNAS_PENDENTES = [
 # ============================================================
 
 ORDEM_COLUNAS = [
-    # A
     "PROCESSO",
-
-    # B
     "CENTRO_DE_TRABALHO",
-
-    # C
     "ROTEIRO_DE_LEITURA",
-
-    # D
     "LOCALIDADE",
-
-    # E
     "AREA",
-
-    # F
     "UT",
-
-    # G
     "DATA_LIGACAO",
-
-    # H
     "CLASSE_SUBCLASSE",
-
-    # I
     "CATEGORIA",
-
-    # J
     "LOTE",
-
-    # K
     "ENDERECO",
-
-    # L
     "CLIENTE_CORPORATIVO",
-
-    # M
     "GESTOR_RESPONSAVEL",
-
-    # N
     "STATUS_INSTALACAO",
-
-    # O
     "PN",
-
-    # P
     "NOME",
-
-    # Q
     "DATA_CRIACAO_NOTA",
-
-    # R
     "ENTRADA",
-
-    # S
     "NOTA_GERADA",
-
-    # T
     "OBSERVACAO_STATUS",
-
-    # U
     "OBS_COMPLEMENTAR",
-
-    # V
     "ANALISES_E_INFORMACOES",
-
-    # W
     "INSTALACAO",
-
-    # X
     "NOTA_SERVICO",
-
-    # Y
     "DATA_CONCLUSAO",
-
-    # Z
     "RESPONSAVEL",
-
-    # AA
     "CENTRO_DO_TRABALHO",
-
-    # AB
     "SERVICO_EXECUTADO",
-
-    # AC
     "TIPO_DE_NOTA",
-
-    # AD
     "STATUS",
-
-    # AE
     "OBS_REJE_EXEC",
-
-    # AF
     "ML21",
-
-    # AG
     "MED_INST",
-
-    # AH
     "MEDIDOR_COM_DEFEITO",
-
-    # AI
     "TIPO_MED",
-
-    # AJ
     "CLASSIFICACAO",
-
-    # AK
     "CONTRATO",
 ]

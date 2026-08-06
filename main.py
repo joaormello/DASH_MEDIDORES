@@ -1,7 +1,8 @@
 from config.settings import (
     ARQUIVO_CSV,
-    ARQUIVO_SAIDA,
     ARQUIVO_CONTROLE,
+    obter_arquivo_saida,
+    AGUARDAR_NOVA_EXPORTACAO
 )
 
 from services.excel_service import (
@@ -75,16 +76,25 @@ def main() -> None:
 
 
     # =====================================================
-    # ETAPA 3 - AGUARDAR UMA NOVA EXPORTAÇÃO DO SPOTFIRE
+    # ETAPA 3 - AGUARDAR NOVA EXPORTAÇÃO (PRODUÇÃO)
     # =====================================================
 
-    data_modificacao_csv = esperar_nova_exportacao(
-        caminho_arquivo=ARQUIVO_CSV,
-        caminho_controle=ARQUIVO_CONTROLE,
-        intervalo=30,
-        timeout=1800,
-        tempo_estabilidade=5,
-    )
+    if AGUARDAR_NOVA_EXPORTACAO:
+
+        print("\n[MODO DESENVOLVIMENTO]")
+        print("Utilizando o base.csv existente.\n")
+
+        data_modificacao_csv = None
+
+    else:
+
+        data_modificacao_csv = esperar_nova_exportacao(
+            caminho_arquivo=ARQUIVO_CSV,
+            caminho_controle=ARQUIVO_CONTROLE,
+            intervalo=30,
+            timeout=1800,
+            tempo_estabilidade=5,
+        )
 
 
     # =====================================================
@@ -144,24 +154,33 @@ def main() -> None:
 
 
     # =====================================================
-    # ETAPA 9 - EXPORTAR PARA EXCEL
+    # ETAPA 9 - DEFINIR O NOVO ARQUIVO DE SAÍDA
+    # =====================================================
+
+    arquivo_saida = obter_arquivo_saida()
+
+
+    # =====================================================
+    # ETAPA 10 - EXPORTAR PARA EXCEL
     # =====================================================
 
     exportar_resultado_excel(
         resultado=resultado_final,
         nao_encontradas=df_nao_encontradas,
-        caminho_saida=ARQUIVO_SAIDA,
+        caminho_saida=arquivo_saida,
     )
 
 
     # =====================================================
-    # ETAPA 10 - REGISTRAR A BASE COMO PROCESSADA
+    # ETAPA 11 - REGISTRAR A BASE COMO PROCESSADA
     # =====================================================
 
-    salvar_ultima_execucao(
-        caminho_controle=ARQUIVO_CONTROLE,
-        data_modificacao=data_modificacao_csv,
-    )
+    if not AGUARDAR_NOVA_EXPORTACAO:
+
+        salvar_ultima_execucao(
+            caminho_controle=ARQUIVO_CONTROLE,
+            data_modificacao=data_modificacao_csv,
+        )
 
 
     # =====================================================
@@ -186,7 +205,7 @@ def main() -> None:
     )
 
     print(
-        f"Arquivo salvo em:\n{ARQUIVO_SAIDA}"
+        f"Arquivo salvo em:\n{arquivo_saida}"
     )
 
 
